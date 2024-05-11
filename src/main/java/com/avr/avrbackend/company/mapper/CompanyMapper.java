@@ -2,7 +2,9 @@ package com.avr.avrbackend.company.mapper;
 
 import com.avr.avrbackend.company.domain.Company;
 import com.avr.avrbackend.company.domain.CompanyDto;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CompanyMapper {
 
     public static Company mapToCompany (CompanyDto companyDto){

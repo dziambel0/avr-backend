@@ -1,11 +1,15 @@
 package com.avr.avrbackend.user.controller;
 
+import com.avr.avrbackend.user.domain.User;
 import com.avr.avrbackend.user.domain.UserDto;
+import com.avr.avrbackend.user.mapper.UserMapper;
 import com.avr.avrbackend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -14,39 +18,48 @@ public class UserController {
 
     private final UserService userService;
 
-//    @GetMapping
-//    public List<UserDto> getAllUsers() {
-//        return userService.getAllUsers();
-//    }
+    private final UserMapper userMapper;
 
-//    @GetMapping("/{userId}")
-//    public UserDto getUserById(@PathVariable Long userId) {
-//        for (UserDto user : users) {
-//            if (user.getUserId().equals(userId)) {
-//                return user;
-//            }
-//        }
-//        throw new RuntimeException("User not found for id: " + userId);
-//    }
-//
-//    @PostMapping
-//    public void addUser(@RequestBody UserDto user) {
-//        users.add(user);
-//    }
-//
-//    @PutMapping("/{userId}")
-//    public void updateUser(@PathVariable Long userId, @RequestBody UserDto userDto) {
-//        for (int i = 0; i < users.size(); i++) {
-//            if (users.get(i).getUserId().equals(userId)) {
-//                users.set(i, userDto);
-//                return;
-//            }
-//        }
-//        throw new RuntimeException("User not found for id: " + userId);
-//    }
-//
-//    @DeleteMapping("/{userId}")
-//    public void deleteUser(@PathVariable Long userId) {
-//        users.removeIf(user -> user.getUserId().equals(userId));
-//    }
-//}
+    @GetMapping
+    public ResponseEntity<List<UserDto>> getListOfUsers() {
+        List<User> userList = userService.getAllUsers();
+        List<UserDto> dtos = userList.stream()
+                .map(userMapper::mapToUserDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> createUser(@RequestBody UserDto productGroupsDTO) {
+        User user = userMapper.mapToUser(productGroupsDTO);
+        userService.createUser(user);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "{userId}")
+    public ResponseEntity<UserDto> getUser(@PathVariable Long userId) {
+        User user = userService.getUserById(userId)
+                .orElseThrow(()-> new RuntimeException("User not found by id:" + userId));
+        UserDto dto = userMapper.mapToUserDto(user);
+        return ResponseEntity.ok(dto);
+    }
+
+    @PutMapping(value = "{userId}")
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long userId, @RequestBody UserDto userDto) {
+        User existingUser = userService.getUserById(userId)
+                .orElseThrow(()-> new RuntimeException("User not found by id:" + userId));
+
+        User updatedUser = userMapper.mapToUser(userDto);
+        updatedUser.setUserId(existingUser.getUserId());
+
+        User savedUser = userService.updateUser(updatedUser);
+        UserDto savedDto = userMapper.mapToUserDto(savedUser);
+        return ResponseEntity.ok(savedDto);
+    }
+
+    @DeleteMapping(value = "{userId}")
+    public ResponseEntity<Void> deleteUser (@PathVariable Long userId) {
+        userService.deleteUser(userId);
+        return ResponseEntity.noContent().build();
+    }
+}

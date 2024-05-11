@@ -2,7 +2,9 @@ package com.avr.avrbackend.cars.mapper;
 
 import com.avr.avrbackend.cars.domain.Car;
 import com.avr.avrbackend.cars.domain.CarDto;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CarMapper {
 
     public static Car mapToCar (CarDto carDto){

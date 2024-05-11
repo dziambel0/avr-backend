@@ -2,7 +2,9 @@ package com.avr.avrbackend.order.mapper;
 
 import com.avr.avrbackend.order.domain.Order;
 import com.avr.avrbackend.order.domain.OrderDto;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OrderMapper {
 
     public static Order mapToOrder (OrderDto orderDto){
