@@ -30,8 +30,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createUser(@RequestBody UserDto serDTO) {
-        User user = userMapper.mapToUser(serDTO);
+    public ResponseEntity<Void> createUser(@RequestBody UserDto userDTO) {
+        User user = userMapper.mapToUser(userDTO);
         userService.createUser(user);
         return ResponseEntity.ok().build();
     }

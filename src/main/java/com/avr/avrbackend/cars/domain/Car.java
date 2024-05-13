@@ -24,10 +24,10 @@ public class Car {
     @Column(name = "MODEL")
     private String model;
 
-    @Column(name = "YEAR")
-    private int year;
+    @Column(name = "CAR_YEAR")
+    private int car_year;
 
-    @Column(name = "EWGISTRATION_NUMBER")
+    @Column(name = "REGISTRATION_NUMBER")
     private String registrationNumber;
 
     @Column(name ="STATUS")

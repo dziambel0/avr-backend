@@ -12,7 +12,7 @@ public class CarMapper {
         return Car.builder()
                 .brand(carDto.getBrand())
                 .model(carDto.getModel())
-                .year(carDto.getYear())
+                .car_year(carDto.getCar_year())
                 .registrationNumber(carDto.getRegistrationNumber())
                 .statusEnum(CarStatus.ACTIVE)
                 .build();
@@ -23,7 +23,7 @@ public class CarMapper {
                 car.getCarId(),
                 car.getBrand(),
                 car.getModel(),
-                car.getYear(),
+                car.getCar_year(),
                 car.getRegistrationNumber(),
                 (CarStatus) car.getStatusEnum()
         );

@@ -1,6 +1,8 @@
 package com.avr.avrbackend.order.domain;
 
+import com.avr.avrbackend.cars.domain.Car;
 import com.avr.avrbackend.cars.domain.CarDto;
+import com.avr.avrbackend.company.domain.Company;
 import com.avr.avrbackend.company.domain.CompanyDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,5 +25,4 @@ public class OrderDto {
     private LocalDate endDate;
 
     private double price;
-
 }
