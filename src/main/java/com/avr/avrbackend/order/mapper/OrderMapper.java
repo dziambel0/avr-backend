@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OrderMapper {
 
-    public static Order mapToOrder (OrderDto orderDto){
+    public Order mapToOrder (OrderDto orderDto){
         return Order.builder()
                 .startDate(orderDto.getStartDate())
                 .endDate(orderDto.getEndDate())
@@ -15,7 +15,7 @@ public class OrderMapper {
                 .build();
     }
 
-    public static OrderDto mapToOrderDto (Order order){
+    public OrderDto mapToOrderDto (Order order){
         return new OrderDto(
                 order.getOrderId(),
                 order.getStartDate(),

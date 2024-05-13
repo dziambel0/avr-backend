@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CarMapper {
 
-    public static Car mapToCar (CarDto carDto){
+    public Car mapToCar (CarDto carDto){
         return Car.builder()
                 .brand(carDto.getBrand())
                 .model(carDto.getModel())
@@ -16,7 +16,7 @@ public class CarMapper {
                 .build();
     }
 
-    public static CarDto mapToCarDto (Car car){
+    public CarDto mapToCarDto (Car car){
         return new CarDto(
                 car.getCarId(),
                 car.getBrand(),

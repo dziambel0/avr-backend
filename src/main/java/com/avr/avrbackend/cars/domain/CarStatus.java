@@ -1,5 +1,5 @@
 package com.avr.avrbackend.cars.domain;
 
-public enum CarStats {
+public enum CarStatus {
     ACTIVE, LOCKED
 }
