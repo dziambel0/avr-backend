@@ -2,6 +2,7 @@ package com.avr.avrbackend.cars.mapper;
 
 import com.avr.avrbackend.cars.domain.Car;
 import com.avr.avrbackend.cars.domain.CarDto;
+import com.avr.avrbackend.cars.domain.CarStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,6 +14,7 @@ public class CarMapper {
                 .model(carDto.getModel())
                 .year(carDto.getYear())
                 .registrationNumber(carDto.getRegistrationNumber())
+                .statusEnum(CarStatus.ACTIVE)
                 .build();
     }
 
@@ -22,7 +24,8 @@ public class CarMapper {
                 car.getBrand(),
                 car.getModel(),
                 car.getYear(),
-                car.getRegistrationNumber()
+                car.getRegistrationNumber(),
+                (CarStatus) car.getStatusEnum()
         );
     }
 }

@@ -30,6 +30,9 @@ public class Car {
     @Column(name = "EWGISTRATION_NUMBER")
     private String registrationNumber;
 
+    @Column(name ="STATUS")
+    private Enum<CarStatus> statusEnum;
+
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;

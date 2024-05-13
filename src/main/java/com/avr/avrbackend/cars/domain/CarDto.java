@@ -20,4 +20,6 @@ public class CarDto {
         private int year;
 
         private String registrationNumber;
+
+        private CarStatus carStatus;
 }
