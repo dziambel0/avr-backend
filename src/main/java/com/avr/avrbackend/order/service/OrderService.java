@@ -1,19 +1,36 @@
 package com.avr.avrbackend.order.service;
 
 import com.avr.avrbackend.cars.domain.Car;
+import com.avr.avrbackend.cars.domain.CarDto;
+import com.avr.avrbackend.cars.mapper.CarMapper;
+import com.avr.avrbackend.cars.service.CarService;
 import com.avr.avrbackend.order.domain.Order;
+import com.avr.avrbackend.order.domain.OrderDto;
+import com.avr.avrbackend.order.mapper.OrderMapper;
 import com.avr.avrbackend.order.repository.OrderRepository;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
+
+    private final CarService carService;
+
+    private final OrderMapper orderMapper;
+
+    private final CarMapper carMapper;
+
+    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
     public Order createOrder(Order order){
         return orderRepository.save(order);
@@ -35,35 +52,52 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
-    public Order addCarToOrder(Long orderId, Car car){
+    public ResponseEntity<OrderDto> addCarToOrder(Long orderId, Long carId){
+        logger.info("Adding car {} to order {}", carId, orderId);
+
+        Car car = carService.getCarById(carId)
+                .orElseThrow(()-> new RuntimeException("Car not found by id: " + carId));
+        logger.info("Retrieved car: {}", car);
+
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(()-> new RuntimeException("Order not found id: " + orderId));
+                .orElseThrow(()-> new RuntimeException("Order not found by id: " + orderId));
+        logger.info("Retrieved order: {}", order);
+
         order.getCars().add(car);
-        return orderRepository.save(order);
+        orderRepository.save(order);
+        logger.info("Car added to order: {}", order);
+
+        OrderDto orderDto = orderMapper.mapToOrderDto(order);
+        return ResponseEntity.ok(orderDto);
     }
 
-    public Order deleteCarFromOrder(Long orderId, Car car){
+    public Order deleteCarFromOrder(Long orderId, Long carId){
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(()->new RuntimeException("Order not found id: " + orderId));
+
+        Car car = carService.getCarById(carId)
+                .orElseThrow(()-> new RuntimeException("Car not found by id: " + carId));
+
         order.getCars().remove(car);
         return orderRepository.save(order);
     }
 
-    public List<Car>getCarsFromOrder(Long orderId){
-        List<Car> carList = orderRepository.findById(orderId)
-                .map(Order::getCars).orElseThrow(()->new RuntimeException("Cars not found in Order id :" + orderId));
-        return carList;
-    }
-
     public Car getCarFromOrder(Long orderId, Long carId){
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(()->new RuntimeException("Order not foud by id; " + orderId));
-        for (Car car: order.getCars()){
-            if (car.getCarId().equals(carId)){
-                return car;
-            }
-        }
-        throw new RuntimeException("Car not fout by id:" + carId);
+                .orElseThrow(()->new RuntimeException("Order not found by id: " + orderId));
+
+        return order.getCars().stream()
+                .filter(car -> car.getCarId().equals(carId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Car not found by id: " + carId));
     }
 
+    public List<CarDto> getCarDtosFromOrder(Long orderId) {
+        List<Car> carList = orderRepository.findById(orderId)
+                .map(Order::getCars)
+                .orElseThrow(() -> new RuntimeException("Cars not found in Order id: " + orderId));
+        return carList.stream()
+                .map(carMapper::mapToCarDto)
+                .collect(Collectors.toList());
+    }
 }

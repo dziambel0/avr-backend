@@ -39,14 +39,14 @@ public class CarService {
     public void lockCar(Long id) throws CarNotFoundExeption {
         Car existingCar = carRepository.findById(id)
                 .orElseThrow(CarNotFoundExeption::new);
-        existingCar.setStatusEnum(CarStatus.LOCKED);
+        existingCar.setCarStatus(CarStatus.LOCKED);
         carRepository.save(existingCar);
     }
 
     public void unlockCar(Long id) throws CarNotFoundExeption {
         Car existingCar = carRepository.findById(id)
                 .orElseThrow(CarNotFoundExeption::new);
-        existingCar.setStatusEnum(CarStatus.ACTIVE);
+        existingCar.setCarStatus(CarStatus.ACTIVE);
         carRepository.save(existingCar);
     }
 

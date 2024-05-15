@@ -30,11 +30,18 @@ public class Order {
     @Column(name = "PRICE")
     private double price;
 
-    @OneToMany(mappedBy = "order")
-    private List<Car> cars;
-
     @ManyToOne
     @JoinColumn(name = "COMPANY_ID")
     private Company company;
+
+    @ManyToMany
+    @JoinTable(
+            name = "order_car",
+            joinColumns = @JoinColumn(name = "ORDER_ID"),
+            inverseJoinColumns = @JoinColumn(name = "CAR_ID")
+    )
+    private List<Car> cars;
+
+
 
 }

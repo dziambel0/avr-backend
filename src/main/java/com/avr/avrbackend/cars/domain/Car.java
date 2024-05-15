@@ -5,6 +5,8 @@ import com.avr.avrbackend.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -25,19 +27,18 @@ public class Car {
     private String model;
 
     @Column(name = "CAR_YEAR")
-    private int car_year;
+    private int carYear;
 
     @Column(name = "REGISTRATION_NUMBER")
     private String registrationNumber;
 
     @Column(name ="STATUS")
-    private Enum<CarStatus> statusEnum;
+    private CarStatus carStatus;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "ORDER_ID")
-    private Order order;
+    @ManyToMany(mappedBy = "cars")
+    private List<Order> orders;
 }

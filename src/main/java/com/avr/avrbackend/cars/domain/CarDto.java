@@ -17,7 +17,7 @@ public class CarDto {
 
         private String model;
 
-        private int car_year;
+        private int carYear;
 
         private String registrationNumber;
 

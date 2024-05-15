@@ -9,6 +9,8 @@ import com.avr.avrbackend.order.mapper.OrderMapper;
 import com.avr.avrbackend.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.weaver.ast.Or;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +29,8 @@ public class OrderController {
 
     private final CarMapper carMapper;
 
+    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
+
     @GetMapping
     public ResponseEntity<List<OrderDto>> getListOfOrders(){
         List<Order> orderList = orderService.getAllOrders();
@@ -44,8 +48,8 @@ public class OrderController {
         return ResponseEntity.ok(dto);
     }
 
-    @PutMapping
-    public ResponseEntity<Void> createOrder(@PathVariable OrderDto orderDto){
+    @PostMapping
+    public ResponseEntity<Void> createOrder(@RequestBody OrderDto orderDto){
         Order order = orderMapper.mapToOrder(orderDto);
         orderService.createOrder(order);
         return ResponseEntity.ok().build();
@@ -70,26 +74,29 @@ public class OrderController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(value = "/add/{orderId}")
-    public ResponseEntity<OrderDto> addCarToOrder(@PathVariable Long orderId, @RequestBody CarDto carDto){
-        Car car = carMapper.mapToCar(carDto);
-        Order order = orderService.addCarToOrder(orderId, car);
-        return ResponseEntity.ok(orderMapper.mapToOrderDto(order));
+    @PutMapping(value = "/add/{orderId}/{carId}")
+    public ResponseEntity<OrderDto> addCarToOrder(@PathVariable Long orderId, @PathVariable Long carId){
+        logger.info("Adding car {} to order {}", carId, orderId);
+        return orderService.addCarToOrder(orderId, carId);
     }
 
     @PutMapping(value = "/delete/{orderId}/{carId}")
     public ResponseEntity<OrderDto> deleteCarFromOrder(@PathVariable Long orderId, @PathVariable Long carId){
         Car car = orderService.getCarFromOrder(orderId, carId);
-        Order order = orderService.deleteCarFromOrder(orderId,car);
+        Order order = orderService.deleteCarFromOrder(orderId, carId);
         return ResponseEntity.ok(orderMapper.mapToOrderDto(order));
     }
 
-//    @GetMapping(value = "{orderId}")
-//    public ResponseEntity<List<CarDto>> getCarsFromOrder(@PathVariable Long orderId){
-//        List<Car> carList = orderService.getCarsFromOrder(orderId);
-//        List<CarDto> dtos = carList.stream()
-//                .map(carMapper::mapToCarDto)
-//                .collect(Collectors.toList());
-//        return ResponseEntity.ok(dtos);
-//    }
+    @GetMapping(value = "{orderId}/cars")
+    public ResponseEntity<List<CarDto>> getCarsFromOrder(@PathVariable Long orderId){
+        List<CarDto> carDtos = orderService.getCarDtosFromOrder(orderId);
+        return ResponseEntity.ok(carDtos);
+    }
+
+    @GetMapping(value = "{orderId}/cars/{carId}")
+    public ResponseEntity<CarDto> getCarFromOrder(@PathVariable Long orderId, @PathVariable Long carId){
+        Car car = orderService.getCarFromOrder(orderId, carId);
+        CarDto dto = carMapper.mapToCarDto(car);
+        return ResponseEntity.ok(dto);
+    }
 }

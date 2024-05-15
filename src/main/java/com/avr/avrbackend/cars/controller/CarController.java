@@ -78,7 +78,7 @@ public class CarController {
     @PostMapping(value = "/{carId}/unlock")
     public ResponseEntity<Void> unlockCar(@PathVariable Long carId){
         try {
-            carService.lockCar(carId);
+            carService.unlockCar(carId);
             return ResponseEntity.ok().build();
         } catch (CarNotFoundExeption e) {
             return ResponseEntity.notFound().build();
