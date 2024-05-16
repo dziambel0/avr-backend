@@ -99,4 +99,9 @@ public class OrderController {
         CarDto dto = carMapper.mapToCarDto(car);
         return ResponseEntity.ok(dto);
     }
+
+    @PutMapping(value = "/{orderId}/assignCompany/{companyId}")
+    public Order assignCompanyToOrder(@PathVariable Long orderId, @PathVariable Long companyId){
+        return orderService.assignComapnyToOrder(orderId, companyId);
+    }
 }

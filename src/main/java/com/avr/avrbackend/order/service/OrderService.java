@@ -4,6 +4,8 @@ import com.avr.avrbackend.cars.domain.Car;
 import com.avr.avrbackend.cars.domain.CarDto;
 import com.avr.avrbackend.cars.mapper.CarMapper;
 import com.avr.avrbackend.cars.service.CarService;
+import com.avr.avrbackend.company.domain.Company;
+import com.avr.avrbackend.company.repository.CompanyRepository;
 import com.avr.avrbackend.order.domain.Order;
 import com.avr.avrbackend.order.domain.OrderDto;
 import com.avr.avrbackend.order.mapper.OrderMapper;
@@ -29,6 +31,8 @@ public class OrderService {
     private final OrderMapper orderMapper;
 
     private final CarMapper carMapper;
+
+    private final CompanyRepository companyRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
@@ -100,4 +104,14 @@ public class OrderService {
                 .map(carMapper::mapToCarDto)
                 .collect(Collectors.toList());
     }
+
+    public Order assignComapnyToOrder(Long orderId, Long companyId){
+        Order order = orderRepository.findById(orderId).orElseThrow(()-> new RuntimeException("Order not found by id: " + orderId));
+        Company company = companyRepository.findById(companyId).orElseThrow(()-> new RuntimeException("Company not found by Id: "+companyId));
+
+        order.setCompany(company);
+        return orderRepository.save(order);
+    }
+
+
 }

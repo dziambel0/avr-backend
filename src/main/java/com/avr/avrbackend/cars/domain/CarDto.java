@@ -1,5 +1,6 @@
 package com.avr.avrbackend.cars.domain;
 
+import com.avr.avrbackend.user.domain.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

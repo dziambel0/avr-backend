@@ -84,4 +84,10 @@ public class CarController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PutMapping("/{carId}/assignUser/{userId}")
+    public Car assignUserToCar(@PathVariable Long carId, @PathVariable Long userId){
+        return carService.assignUserToCar(carId, userId);
+    }
+
 }
