@@ -6,6 +6,7 @@ import com.avr.avrbackend.cars.mapper.CarMapper;
 import com.avr.avrbackend.order.domain.Order;
 import com.avr.avrbackend.order.domain.OrderDto;
 import com.avr.avrbackend.order.mapper.OrderMapper;
+import com.avr.avrbackend.order.service.CurrencyService;
 import com.avr.avrbackend.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.weaver.ast.Or;
@@ -14,8 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -28,6 +31,8 @@ public class OrderController {
     private final OrderMapper orderMapper;
 
     private final CarMapper carMapper;
+
+    private final CurrencyService currencyService;
 
     private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
@@ -103,5 +108,10 @@ public class OrderController {
     @PutMapping(value = "/{orderId}/assignCompany/{companyId}")
     public Order assignCompanyToOrder(@PathVariable Long orderId, @PathVariable Long companyId){
         return orderService.assignComapnyToOrder(orderId, companyId);
+    }
+
+    @PostMapping(value = "/{orderId}/calculate-price")
+    public void calculateOrderPrice(@PathVariable Long orderId){
+        orderService.calculateOrderPrice(orderId);
     }
 }

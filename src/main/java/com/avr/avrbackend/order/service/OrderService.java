@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,6 +34,8 @@ public class OrderService {
     private final CarMapper carMapper;
 
     private final CompanyRepository companyRepository;
+
+    private final CurrencyService currencyService;
 
     private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
@@ -113,5 +116,19 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-
+    public void calculateOrderPrice (Long orderId){
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+        if (orderOptional.isPresent()){
+            Order order = orderOptional.get();
+            long days = ChronoUnit.DAYS.between(order.getStartDate(), order.getEndDate());
+            int numbersOfCars = order.getCars().size();
+            double priceInPLN = days * numbersOfCars * 20;
+            double exchangeRate = currencyService.getEuroExchangeRate();
+            double priceInEUR = priceInPLN / exchangeRate;
+            order.setPrice(priceInEUR);
+            orderRepository.save(order);
+        }else {
+            throw new RuntimeException("Order not found by id: "+orderId);
+        }
+    }
 }
