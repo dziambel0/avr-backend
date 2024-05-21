@@ -1,10 +1,12 @@
 package com.avr.avrbackend.order.service;
 
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+@Service
 public class WeatherService {
     private static final String API_KEY = "0b28e961f041d5898c77bdeb73d755b0";
     private static final String BASE_URL = "http://api.openweathermap.org/data/2.5/weather";

@@ -11,6 +11,7 @@ import com.avr.avrbackend.order.domain.OrderDto;
 import com.avr.avrbackend.order.mapper.OrderMapper;
 import com.avr.avrbackend.order.repository.OrderRepository;
 import lombok.AllArgsConstructor;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,8 @@ public class OrderService {
     private final CompanyRepository companyRepository;
 
     private final CurrencyService currencyService;
+
+    private final WeatherService weatherService;
 
     private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
@@ -124,7 +127,23 @@ public class OrderService {
             int numbersOfCars = order.getCars().size();
             double priceInPLN = days * numbersOfCars * 20;
             double exchangeRate = currencyService.getEuroExchangeRate();
+
+            //API WYMIANA WALUT - Zamiana na EUR
             double priceInEUR = priceInPLN / exchangeRate;
+
+            //API POGODA - Napiczanie rabat
+            try{
+                String weatherData = weatherService.getWeatherData("Katowice");
+                JSONObject json = new JSONObject (weatherData);
+                String weatherDescription = json.getJSONArray("weather").getJSONObject(0).getString("description");
+
+                if(weatherDescription.contains("rain")){
+                    priceInEUR *= 0.8;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
             order.setPrice(priceInEUR);
             orderRepository.save(order);
         }else {
