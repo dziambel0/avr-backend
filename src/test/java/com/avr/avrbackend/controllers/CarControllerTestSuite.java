@@ -1,4 +1,4 @@
-package com.avr.avrbackend;
+package com.avr.avrbackend.controllers;
 
 import com.avr.avrbackend.cars.controller.CarController;
 import com.avr.avrbackend.cars.controller.CarNotFoundExeption;
