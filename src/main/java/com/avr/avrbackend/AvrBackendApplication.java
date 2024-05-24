@@ -11,5 +11,4 @@ public class AvrBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(AvrBackendApplication.class, args);
     }
-
 }
